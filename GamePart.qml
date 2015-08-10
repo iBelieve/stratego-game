@@ -48,6 +48,22 @@ Rectangle {
         }
     }
 
+    function attack(defender) {
+        if (defender.rank === 0) {
+            return "bomb"
+        } else if (defender.rank === 1 && rank === -1) {
+            return "win"
+        } else if (defender.rank === rank) {
+            return "tie"
+        } else if (rank === -1) {
+            return "loose"
+        } else if (defender.rank === -1) {
+            return "win"
+        } else {
+            return defender.rank < rank ? "win" : "loose"
+        }
+    }
+
     function within(a, b, count) {
         return b >= a - count && b <= a + count
     }
