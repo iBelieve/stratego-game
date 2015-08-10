@@ -12,8 +12,17 @@ Rectangle {
     property int row
     property int column
 
-    onRowChanged: y = 10 + 60 * row
-    onColumnChanged: x = 10 + 60 * column
+    function reset() {
+        move(row, column)
+    }
+
+    function move(row, column) {
+        part.row = row
+        part.column = column
+
+        x = 10 + 60 * column
+        y = 10 + 60 * row
+    }
 
     property string team: "blue"
     property int rank
@@ -24,9 +33,9 @@ Rectangle {
 
     property bool canDrag: {
         if (gameEngine.mode == "playing") {
-            return rank != 0
+            return rank != 0 && team == gameEngine.currentTeam
         } else {
-            return true
+            return true && team == gameEngine.currentTeam
         }
     }
 
@@ -89,7 +98,11 @@ Rectangle {
         color: "white"
 
         text: {
-            if (rank == -1) {
+            var showRank = gameEngine.currentTeam === team || gameEngine.lastPart == part
+
+            if (!showRank) {
+                return ""
+            } else if (rank == -1) {
                 return "S"
             } else if (rank == 0) {
                 return "B"

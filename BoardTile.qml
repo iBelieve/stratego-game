@@ -15,27 +15,37 @@ DropArea {
         var attacker = drag.source
         var defender = board.partAt(row, column)
 
+        if (!attacker.canDrop(row, column)) {
+            print("Rejected!")
+            drop.accepted = false
+            attacker.reset()
+            attacker.reset()
+            return
+        }
+
         if (defender && defender !== attacker) {
             var outcome = attacker.attack(defender)
             print(outcome)
 
             if (outcome === "win") {
                 defender.visible = false
-                attacker.row = row
-                attacker.column = column
+                attacker.move(row, column)
+                gameEngine.moveOver(attacker)
             } else if (outcome === "loose") {
                 attacker.visible = false
-                defender.row = attacker.row
-                defender.column = attacker.column
+                defender.move(attacker.row, attacker.column)
+                gameEngine.moveOver(defender)
             } else if (outcome === "tie") {
                 attacker.visible = false
                 defender.visible = false
+                gameEngine.moveOver()
             } else if (outcome === "bomb") {
                 attacker.visible = false
+                gameEngine.moveOver(defender)
             }
         } else {
-            attacker.row = row
-            attacker.column = column
+            attacker.move(row, column)
+            gameEngine.moveOver()
         }
     }
 
