@@ -20,8 +20,7 @@ Column {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             font.pointSize: 19
-            text: gameEngine.currentTeam.name
-            font.capitalization: Font.Capitalize
+            text: gameEngine.currentTeam.capName
         }
     }
 
@@ -49,6 +48,7 @@ Column {
                     width: 20
                     height: 20
                     radius: width/2
+                    visible: gameEngine.currentTeam.lostParts[modelData] > 1
                     color: "#ddd"
                     border.color: "#bbb"
                     anchors {
@@ -60,7 +60,6 @@ Column {
                     Text {
                         anchors.centerIn: parent
                         text: gameEngine.currentTeam.lostParts[modelData]
-                        visible: gameEngine.currentTeam.lostParts[modelData] > 1
                     }
                 }
             }
@@ -91,6 +90,7 @@ Column {
                     width: 20
                     height: 20
                     radius: width/2
+                    visible: gameEngine.currentTeam.wonParts[modelData] > 1
                     color: "#ddd"
                     border.color: "#bbb"
                     anchors {
@@ -102,7 +102,6 @@ Column {
                     Text {
                         anchors.centerIn: parent
                         text: gameEngine.currentTeam.wonParts[modelData]
-                        visible: gameEngine.currentTeam.wonParts[modelData] > 1
                     }
                 }
             }

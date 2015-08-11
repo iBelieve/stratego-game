@@ -3,11 +3,8 @@ import "utils.js" as Utils
 
 Item {
 
-    state: "" // or "pass" or "battle"
+    state: "" // or "pass"
     property var stateParams: undefined
-
-
-    property string mode: "playing" // or "pass", "battle", "setup"
 
     property Team currentTeam: blueTeam
     readonly property Team oppositeTeam: {
@@ -39,6 +36,15 @@ Item {
         "7": 4,
         "8": 5,
         "9": 8
+    }
+
+    function go(state, params) {
+        gameEngine.state = ""
+        gameEngine.stateParams = params
+        gameEngine.state = state
+
+        if (state == "pass" || state == "battle" || state == "gameOver")
+            overlayView.showing = true
     }
 
     function move(attacker, row, column) {
@@ -139,7 +145,7 @@ Item {
     }
 
     function showBattle(attacker, defender, outcome, replay) {
-        overlayView.go("battle", {
+        go("battle", {
             "attacker": attacker,
             "defender": defender,
             "outcome": outcome,
@@ -147,13 +153,30 @@ Item {
         })
     }
 
+    function foundFlag() {
+        gameOver(currentTeam, "%1 found the %2 flag!".arg(currentTeam.capName).arg(oppositeTeam.name))
+    }
+
     function passToNext() {
         delay(500).then(function() {
-            overlayView.go("pass", {
-                "team": oppositeTeam
-            })
+            if (oppositeTeam.noMoreParts) {
+                gameOver(currentTeam, oppositeTeam.capName + " has no more moveable parts")
+            } else if (currentTeam.noMoreParts) {
+                gameOver(oppositeTeam, currentTeam.capName + " has no more moveable parts")
+            } else {
+                go("pass", {
+                    "team": oppositeTeam
+                })
 
-            currentTeam = null
+                currentTeam = null
+            }
+        })
+    }
+
+    function gameOver(team, message) {
+        go("gameOver", {
+            "team": team,
+            "message": message
         })
     }
 
@@ -166,6 +189,14 @@ Item {
 
     function createPart(team, rank, row, column) {
         var uid = Utils.generateID()
+
+        if (rank > 0 || rank === -1) {
+            if (team === "blue") {
+                blueTeam.partCount++
+            } else {
+                redTeam.partCount++
+            }
+        }
 
         var part1 = gamePartComponent.createObject(blueBoard, {
             "info": {

@@ -19,15 +19,6 @@ Rectangle {
 
     property bool showing
 
-
-    function go(state, params) {
-        gameEngine.state = ""
-        gameEngine.stateParams = params
-        gameEngine.state = state
-
-        showing = true
-    }
-
     Rectangle {
         anchors.centerIn: parent
 
@@ -44,6 +35,8 @@ Rectangle {
                     return battleView
                 } else if (gameEngine.state === "pass") {
                     return passView
+                } else if (gameEngine.state === "gameOver") {
+                    return gameOverView
                 } else {
                     return undefined
                 }
@@ -171,6 +164,34 @@ Rectangle {
                 onClicked: {
                     overlayView.showing = false
                     gameEngine.confirmPass(gameEngine.stateParams.team)
+                }
+            }
+        }
+    }
+
+    Component {
+        id: gameOverView
+
+        Column {
+            spacing: 5
+
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 20
+                text: gameEngine.stateParams.team.capName + " won!"
+            }
+
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 15
+                text: gameEngine.stateParams.message
+            }
+
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "Quit!"
+                onClicked: {
+                    Qt.quit()
                 }
             }
         }

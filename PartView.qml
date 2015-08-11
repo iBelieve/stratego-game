@@ -3,9 +3,11 @@ import QtQuick.Window 2.0
 import QtGraphicalEffects 1.0
 
 Item {
+    id: partView
     property string team
     property int rank
-    property bool showRank: gameEngine.currentTeam && gameEngine.currentTeam.name === team
+    property bool showRank: (gameEngine.currentTeam && gameEngine.currentTeam.name === team) || gameEngine.state == "gameOver"
+    property color color: "#E6B713"
 
     Rectangle {
         id: rectangle
@@ -19,7 +21,10 @@ Item {
     Text {
         anchors.centerIn: parent
         font.pointSize: 17
-        color: "white"
+        font.family: "Times New Roman"
+        style: Text.Raised
+        styleColor: Qt.darker(color)
+        color: partView.color
 
         text: {
             if (!showRank) {
@@ -56,12 +61,24 @@ Item {
         }
     }
 
+    DropShadow {
+        anchors.fill: image
+        source: image
+        color: Qt.darker(partView.color)
+        visible: image.source != ""
+
+        horizontalOffset: 0
+        verticalOffset: 1
+        radius: 0
+        samples: 8
+    }
+
     ColorOverlay {
         id: overlay
 
         anchors.fill: image
         source: image
-        color: "white"
+        color: partView.color
         cached: true
         visible: image.source != ""
     }
