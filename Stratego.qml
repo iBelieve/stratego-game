@@ -1,7 +1,9 @@
 import QtQuick 2.4
 import QtQuick.Window 2.0
+import "promises.js" as Promises
 
 Window {
+    id: stratego
     title: "Statego"
 
     width: blueBoard.width + statusView.width + 30
@@ -52,5 +54,25 @@ Window {
         gameEngine.createPart("blue", 5, 0, 2)
         gameEngine.createPart("red", -1, 2, 0)
         gameEngine.createPart("red", 0, 2, 1)
+    }
+
+    function delay(duration) {
+        var promise = new Promises.Promise()
+
+        var timer = timerComponent.createObject(stratego)
+        timer.interval = duration
+        timer.triggered.connect(function() {
+            promise.resolve()
+            timer.destroy()
+        })
+        timer.start()
+
+        return promise
+    }
+
+    Component {
+        id: timerComponent
+
+        Timer {}
     }
 }

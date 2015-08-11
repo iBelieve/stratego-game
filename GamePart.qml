@@ -8,11 +8,11 @@ Item {
     z: Drag.active ? 10 : 0
 
     Behavior on x {
-        SmoothedAnimation {}
+        SmoothedAnimation { duration: 400 }
     }
 
     Behavior on y {
-        SmoothedAnimation {}
+        SmoothedAnimation { duration: 400 }
     }
 
     property int row

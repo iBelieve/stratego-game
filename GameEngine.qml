@@ -1,10 +1,15 @@
 import QtQuick 2.0
 
 Item {
+
+    state: "" // or "pass" or "battle"
+    property var stateParams: undefined
+
+
     property string mode: "playing" // or "pass", "battle", "setup"
 
     property Team currentTeam: blueTeam
-    property GameBoard currentBoard: currentTeam ? currentTeam.board : null
+    property GameBoard currentBoard: blueTeam.board
     property var lastMove: {
         "part": null,
         "row": 0,
@@ -53,20 +58,21 @@ Item {
         var attacker = currentBoard.partAt(lastMove.from.row, lastMove.from.column)
         var defender = currentBoard.partAt(row, column)
 
+        attacker.move(row, column)
+
         if (defender && defender !== attacker) {
             var outcome = attacker.attack(defender)
 
             if (outcome === "win") {
-                defender.destroy()
-                attacker.move(row, column)
+                delay(200).defender.destroy()
             } else if (outcome === "loose") {
-                attacker.destroy()
-                defender.move(attacker.row, attacker.column)
+                delay(200).attacker.destroy()
+                delay(200).defender.move(attacker.row, attacker.column)
             } else if (outcome === "tie") {
-                attacker.destroy()
-                defender.destroy()
+                delay(200).attacker.destroy()
+                delay(200).defender.destroy()
             } else if (outcome === "bomb") {
-                attacker.destroy()
+                delay(200).attacker.destroy()
             }
 
             showBattle(attacker, defender, true)
@@ -84,23 +90,26 @@ Item {
     }
 
     function passToNext() {
-        if (currentTeam == blueTeam) {
-            overlayView.go("pass", {
-                "team": redTeam
-            })
-        } else {
-            overlayView.go("pass", {
-                "team": blueTeam
-            })
-        }
+        delay(500).then(function() {
+            if (currentTeam == blueTeam) {
+                overlayView.go("pass", {
+                    "team": redTeam
+                })
+            } else {
+                overlayView.go("pass", {
+                    "team": blueTeam
+                })
+            }
 
-        currentTeam = null
+            currentTeam = null
+        })
     }
 
     function confirmPass(team) {
         currentTeam = team
+        currentBoard = team.board
 
-        replayMove()
+        delay(500).then(replayMove)
     }
 
     function createPart(team, rank, row, column) {

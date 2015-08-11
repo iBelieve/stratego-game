@@ -3,18 +3,21 @@ import QtQuick.Controls 1.2
 
 Rectangle {
     id: overlay
-    state: "" // or "pass" or "battle"
 
     opacity: showing ? 1 : 0
     color: Qt.rgba(0,0,0,0.3)
 
+    Behavior on opacity {
+        NumberAnimation { duration: 200 }
+    }
+
     property bool showing
-    property var stateParams: undefined
+
 
     function go(state, params) {
-        overlay.state = ""
-        overlay.stateParams = params
-        overlay.state = state
+        gameEngine.state = ""
+        gameEngine.stateParams = params
+        gameEngine.state = state
 
         showing = true
     }
@@ -31,9 +34,9 @@ Rectangle {
             id: loader
             anchors.centerIn: parent
             sourceComponent: {
-                if (overlay.state === "battle") {
+                if (gameEngine.state === "battle") {
                     return battleView
-                } else if (overlay.state === "pass") {
+                } else if (gameEngine.state === "pass") {
                     return passView
                 } else {
                     return undefined
@@ -52,9 +55,9 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pointSize: 20
                 text: {
-                    var outcome = overlayView.stateParams.attacker.attack(stateParams.defender)
+                    var outcome = gameEngine.stateParams.attacker.attack(gameEngine.stateParams.defender)
 
-                    if (stateParams.replay) {
+                    if (gameEngine.stateParams.replay) {
                         if (outcome === "win") {
                             return "You died :("
                         } else if (outcome === "loose") {
@@ -79,13 +82,13 @@ Rectangle {
             }
 
             Row {
-                visible: stateParams.replay
+                visible: gameEngine.stateParams.replay
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 5
 
                 PartView {
-                    team: overlayView.stateParams.defender.team
-                    rank: overlayView.stateParams.defender.rank
+                    team: gameEngine.stateParams.defender.team
+                    rank: gameEngine.stateParams.defender.rank
                     showRank: true
                     width: 60
                     height: 60
@@ -97,8 +100,8 @@ Rectangle {
                 }
 
                 PartView {
-                    team: overlayView.stateParams.attacker.team
-                    rank: overlayView.stateParams.attacker.rank
+                    team: gameEngine.stateParams.attacker.team
+                    rank: gameEngine.stateParams.attacker.rank
                     showRank: true
                     width: 60
                     height: 60
@@ -106,13 +109,13 @@ Rectangle {
             }
 
             Row {
-                visible: !stateParams.replay
+                visible: !gameEngine.stateParams.replay
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 5
 
                 PartView {
-                    team: overlayView.stateParams.attacker.team
-                    rank: overlayView.stateParams.attacker.rank
+                    team: gameEngine.stateParams.attacker.team
+                    rank: gameEngine.stateParams.attacker.rank
                     showRank: true
                     width: 60
                     height: 60
@@ -124,8 +127,8 @@ Rectangle {
                 }
 
                 PartView {
-                    team: overlayView.stateParams.defender.team
-                    rank: overlayView.stateParams.defender.rank
+                    team: gameEngine.stateParams.defender.team
+                    rank: gameEngine.stateParams.defender.rank
                     showRank: true
                     width: 60
                     height: 60
@@ -137,7 +140,8 @@ Rectangle {
                 text: "Got it!"
                 onClicked: {
                     overlayView.showing = false
-                    gameEngine.passToNext()
+                    if (!gameEngine.stateParams.replay)
+                        gameEngine.passToNext()
                 }
             }
         }
@@ -152,7 +156,7 @@ Rectangle {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pointSize: 20
-                text: "Please pass to the " + stateParams.team.name + " team"
+                text: "Please pass to the " + gameEngine.stateParams.team.name + " team"
             }
 
             Button {
@@ -160,7 +164,7 @@ Rectangle {
                 text: "Done!"
                 onClicked: {
                     overlayView.showing = false
-                    gameEngine.confirmPass(stateParams.team)
+                    gameEngine.confirmPass(gameEngine.stateParams.team)
                 }
             }
         }
