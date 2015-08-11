@@ -10,6 +10,14 @@ Item {
     property string mode: "playing" // or "pass", "battle", "setup"
 
     property Team currentTeam: blueTeam
+    readonly property Team oppositeTeam: {
+        if (currentTeam == blueTeam) {
+            return redTeam
+        } else {
+            return blueTeam
+        }
+    }
+
     property GameBoard currentBoard: blueTeam.board
     property var lastMove: {
         "part": null,
@@ -51,18 +59,23 @@ Item {
             var outcome = attacker.attack(defender)
 
             if (outcome === "win") {
+                currentTeam.wonPart(defender.rank)
                 defender.destroy()
                 attacker.move(row, column)
                 lastWinner = attacker
             } else if (outcome === "loose") {
+                currentTeam.lostPart(attacker.rank)
                 attacker.destroy()
                 lastWinner = defender
                 defender.move(attacker.row, attacker.column)
             } else if (outcome === "tie") {
+                currentTeam.lostPart(attacker.rank)
+                currentTeam.wonPart(defender.rank)
                 attacker.destroy()
                 defender.destroy()
                 lastWinner = undefined
             } else if (outcome === "bomb") {
+                currentTeam.lostPart(attacker.rank)
                 attacker.destroy()
                 lastWinner = defender
             }
@@ -90,10 +103,12 @@ Item {
 
             if (outcome === "win") {
                 delay(200).then(function() {
+                    currentTeam.lostPart(defender.rank)
                     defender.destroy()
                 })
             } else if (outcome === "loose") {
                 delay(200).then(function() {
+                    currentTeam.wonPart(attacker.rank)
                     attacker.destroy()
                 })
                 delay(200).then(function() {
@@ -101,13 +116,16 @@ Item {
                 })
             } else if (outcome === "tie") {
                 delay(200).then(function() {
+                    currentTeam.wonPart(attacker.rank)
                     attacker.destroy()
                 })
                 delay(200).then(function() {
+                    currentTeam.lostPart(defender.rank)
                     defender.destroy()
                 })
             } else if (outcome === "bomb") {
                 delay(200).then(function() {
+                    currentTeam.wonPart(attacker.rank)
                     attacker.destroy()
                 })
             }
@@ -131,15 +149,9 @@ Item {
 
     function passToNext() {
         delay(500).then(function() {
-            if (currentTeam == blueTeam) {
-                overlayView.go("pass", {
-                    "team": redTeam
-                })
-            } else {
-                overlayView.go("pass", {
-                    "team": blueTeam
-                })
-            }
+            overlayView.go("pass", {
+                "team": oppositeTeam
+            })
 
             currentTeam = null
         })

@@ -11,6 +11,12 @@ Rectangle {
         NumberAnimation { duration: 200 }
     }
 
+    onOpacityChanged: {
+        if (opacity == 0) {
+            gameEngine.state = ""
+        }
+    }
+
     property bool showing
 
 
