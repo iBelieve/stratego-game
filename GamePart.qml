@@ -46,20 +46,52 @@ Item {
     }
 
     function canDrop(row, column) {
-        var dropPart = part.parent.partAt(row, column)
-
-        var goodDistance = part.column === column || part.row === row
-
-        if (rank != 9) {
-            goodDistance = goodDistance && within(part.column, column, 1) && within(part.row, row, 1)
-        }
+        var dropPart = gameEngine.currentBoard.partAt(row, column)
 
         if (row === part.row && column === part.column) {
             return true
-        } else if (dropPart) {
-            return dropPart.team !== part.team && goodDistance
+        }
+
+        var goodMove = part.column === column || part.row === row
+
+        if (rank != 9 || dropPart) {
+            goodMove = goodMove && within(part.column, column, 1) && within(part.row, row, 1)
         } else {
-            return goodDistance
+            // For each tile in between the current location and the drop location,
+            //   If any spot has a part on it,
+            //     Then this is not a good move
+
+            if (part.column === column) {
+                if (row < part.row) {
+                    for (var i = part.row - 1; i > row; i--) {
+                        if (gameEngine.currentBoard.partAt(i, column))
+                            goodMove = false;
+                    }
+                } else {
+                    for (var i = part.row + 1; i < row; i++) {
+                        if (gameEngine.currentBoard.partAt(i, column))
+                            goodMove = false;
+                    }
+                }
+            } else {
+                if (column < part.column) {
+                    for (var i = part.column - 1; i > column; i--) {
+                        if (gameEngine.currentBoard.partAt(row, i))
+                            goodMove = false;
+                    }
+                } else {
+                    for (var i = part.column + 1; i < column; i++) {
+                        if (gameEngine.currentBoard.partAt(column, i))
+                            goodMove = false;
+                    }
+                }
+            }
+        }
+
+        if (dropPart) {
+            return dropPart.team !== part.team && goodMove
+        } else {
+            return goodMove
         }
     }
 
