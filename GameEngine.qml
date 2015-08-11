@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import "utils.js" as Utils
 
 Item {
 
@@ -15,6 +16,7 @@ Item {
         "row": 0,
         "column": 0
     }
+    property var lastWinner
 
     property var initialParts: {
         "-2": 1, // Flag
@@ -51,18 +53,23 @@ Item {
             if (outcome === "win") {
                 defender.destroy()
                 attacker.move(row, column)
+                lastWinner = attacker
             } else if (outcome === "loose") {
                 attacker.destroy()
+                lastWinner = defender
                 defender.move(attacker.row, attacker.column)
             } else if (outcome === "tie") {
                 attacker.destroy()
                 defender.destroy()
+                lastWinner = undefined
             } else if (outcome === "bomb") {
                 attacker.destroy()
+                lastWinner = defender
             }
 
             showBattle(attacker, defender, outcome)
         } else {
+            lastWinner = undefined
             attacker.move(row, column)
             passToNext()
         }
@@ -146,11 +153,14 @@ Item {
     }
 
     function createPart(team, rank, row, column) {
+        var uid = Utils.generateID()
+
         var part1 = gamePartComponent.createObject(blueBoard, {
             "info": {
                 "team": team,
                 "rank": rank
-            }
+            },
+            "uid": uid
         })
         part1.move(row, column)
 
@@ -158,7 +168,8 @@ Item {
             "info": {
                 "team": team,
                 "rank": rank
-            }
+            },
+            "uid": uid
         })
         part2.move(row, column, true)
     }

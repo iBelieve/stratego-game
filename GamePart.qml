@@ -15,6 +15,8 @@ Item {
         SmoothedAnimation { duration: 400 }
     }
 
+    property string uid
+
     property int row
     property int column
 
@@ -143,5 +145,7 @@ Item {
         anchors.fill: parent
         rank: part.rank
         team: part.team
+        showRank: (gameEngine.currentTeam && gameEngine.currentTeam.name === team) ||
+                  (gameEngine.lastWinner !== undefined && part.uid === gameEngine.lastWinner.uid)
     }
 }
