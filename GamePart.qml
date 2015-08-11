@@ -63,6 +63,10 @@ Item {
             return true
         }
 
+        if (gameEngine.isDisabled(row, column)) {
+            return false
+        }
+
         var goodMove = part.column === column || part.row === row
 
         if (rank != 9 || dropPart) {
@@ -75,24 +79,24 @@ Item {
             if (part.column === column) {
                 if (row < part.row) {
                     for (var i = part.row - 1; i > row; i--) {
-                        if (gameEngine.currentBoard.partAt(i, column))
+                        if (gameEngine.currentBoard.partAt(i, column) || gameEngine.isDisabled(i, column))
                             goodMove = false;
                     }
                 } else {
                     for (var i = part.row + 1; i < row; i++) {
-                        if (gameEngine.currentBoard.partAt(i, column))
+                        if (gameEngine.currentBoard.partAt(i, column) || gameEngine.isDisabled(i, column))
                             goodMove = false;
                     }
                 }
             } else {
                 if (column < part.column) {
                     for (var i = part.column - 1; i > column; i--) {
-                        if (gameEngine.currentBoard.partAt(row, i))
+                        if (gameEngine.currentBoard.partAt(row, i) || gameEngine.isDisabled(row, i))
                             goodMove = false;
                     }
                 } else {
                     for (var i = part.column + 1; i < column; i++) {
-                        if (gameEngine.currentBoard.partAt(column, i))
+                        if (gameEngine.currentBoard.partAt(column, i) || gameEngine.isDisabled(row, i))
                             goodMove = false;
                     }
                 }

@@ -23,6 +23,19 @@ Item {
     }
     property var lastWinner
 
+    property var disabledSquares: [
+        // Left pond
+        { row: 4, column: 2 },
+        { row: 4, column: 3 },
+        { row: 5, column: 2 },
+        { row: 5, column: 3 },
+        // Left pond
+        { row: 4, column: 6 },
+        { row: 4, column: 7 },
+        { row: 5, column: 6 },
+        { row: 5, column: 7 }
+    ]
+
     property var initialParts: {
         "-2": 1, // Flag
         "-1": 1, // Spy
@@ -36,6 +49,15 @@ Item {
         "7": 4,
         "8": 5,
         "9": 8
+    }
+
+    function isDisabled(row, column) {
+        for (var i = 0; i < disabledSquares.length; i++) {
+            if (disabledSquares[i].row === row && disabledSquares[i].column === column)
+                return true
+        }
+
+        return false
     }
 
     function go(state, params) {

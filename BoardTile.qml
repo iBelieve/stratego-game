@@ -26,6 +26,8 @@ DropArea {
         anchors.fill: parent
 
         border.color: "gray"
-        color: dropArea.containsDrag && dropArea.drag.source.canDrop(row, column) ? "#ddd" : "white"
+        color: gameEngine.isDisabled(row, column) ? "#faa"
+                                                  : dropArea.containsDrag && dropArea.drag.source.canDrop(row, column)
+                                                    ? "#ddd" : "white"
     }
 }
