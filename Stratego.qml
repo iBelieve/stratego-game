@@ -4,32 +4,53 @@ import QtQuick.Window 2.0
 Window {
     title: "Statego"
 
-    width: board.width + 20
-    height: board.height + 20
+    width: blueBoard.width + statusView.width + 30
+    height: blueBoard.height + 20
 
     GameEngine {
         id: gameEngine
     }
 
+    StatusView {
+        id: statusView
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+            margins: 10
+        }
+    }
+
     GameBoard {
-        id: board
-        anchors.centerIn: parent
+        id: blueBoard
 
-        GamePart {
-            rank: 4
+        anchors {
+            left: statusView.right
+            verticalCenter: parent.verticalCenter
+            margins: 10
         }
+    }
 
-        GamePart {
-            rank: -1
-            team: "red"
-            row: 9
-        }
+    GameBoard {
+        id: redBoard
 
-        GamePart {
-            rank: 0
-            team: "red"
-            row: 9
-            column: 1
+        anchors {
+            left: statusView.right
+            verticalCenter: parent.verticalCenter
+            margins: 10
         }
+    }
+
+    OverlayView {
+        id: overlayView
+        anchors.fill: parent
+    }
+
+    Component.onCompleted: {
+        gameEngine.createPart("blue", 1, 0, 0)
+        gameEngine.createPart("blue", 9, 0, 1)
+        gameEngine.createPart("blue", 5, 0, 2)
+        gameEngine.createPart("red", -1, 2, 0)
+        gameEngine.createPart("red", 0, 2, 1)
     }
 }

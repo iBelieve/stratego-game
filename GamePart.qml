@@ -1,13 +1,19 @@
 import QtQuick 2.0
 
-Rectangle {
+Item {
     id: part
-    x: 10 + 60 * column
-    y: 10 + 60 * row
-    width: 40; height: width
-    color: team
+    x:width * column
+    y: width * row
+    width: 60; height: width
+    z: Drag.active ? 10 : 0
 
-    radius: 4
+    Behavior on x {
+        SmoothedAnimation {}
+    }
+
+    Behavior on y {
+        SmoothedAnimation {}
+    }
 
     property int row
     property int column
@@ -20,8 +26,8 @@ Rectangle {
         part.row = row
         part.column = column
 
-        x = 10 + 60 * column
-        y = 10 + 60 * row
+        x = width * column
+        y = width * row
     }
 
     property string team: "blue"
@@ -33,14 +39,14 @@ Rectangle {
 
     property bool canDrag: {
         if (gameEngine.mode == "playing") {
-            return rank != 0 && team == gameEngine.currentTeam
+            return rank != 0 && gameEngine.currentTeam && team == gameEngine.currentTeam.name
         } else {
-            return true && team == gameEngine.currentTeam
+            return true && team == gameEngine.currentTeam.name
         }
     }
 
     function canDrop(row, column) {
-        var dropPart = board.partAt(row, column)
+        var dropPart = part.parent.partAt(row, column)
 
         var goodDistance = part.column === column || part.row === row
 
@@ -92,23 +98,9 @@ Rectangle {
         }
     }
 
-    Text {
-        anchors.centerIn: parent
-        font.pointSize: 17
-        color: "white"
-
-        text: {
-            var showRank = gameEngine.currentTeam === team || gameEngine.lastPart == part
-
-            if (!showRank) {
-                return ""
-            } else if (rank == -1) {
-                return "S"
-            } else if (rank == 0) {
-                return "B"
-            } else {
-                return rank
-            }
-        }
+    PartView {
+        anchors.fill: parent
+        rank: part.rank
+        team: part.team
     }
 }

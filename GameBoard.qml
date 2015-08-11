@@ -1,6 +1,10 @@
 import QtQuick 2.0
 
 Rectangle {
+    id: board
+
+    visible: gameEngine.currentBoard == board
+
     width: grid.width + border.width * 2
     height: grid.height + border.width * 2
 
