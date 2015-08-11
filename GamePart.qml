@@ -107,7 +107,9 @@ Item {
     }
 
     function attack(defender) {
-        if (defender.rank === 0) {
+        if (defender.rank === -2) {
+            return "flag"
+        } else if (defender.rank === 0) {
             return "bomb"
         } else if (defender.rank === 1 && rank === -1) {
             return "win"

@@ -54,6 +54,7 @@ Window {
         gameEngine.createPart("blue", 1, 0, 0)
         gameEngine.createPart("blue", 9, 0, 1)
         gameEngine.createPart("blue", 5, 0, 2)
+        gameEngine.createPart("red", -2, 1, 0)
         gameEngine.createPart("red", -1, 2, 0)
         gameEngine.createPart("red", 0, 2, 1)
     }

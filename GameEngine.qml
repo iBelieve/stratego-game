@@ -64,7 +64,10 @@ Item {
         if (defender && defender !== attacker) {
             var outcome = attacker.attack(defender)
 
-            if (outcome === "win") {
+            if (outcome === "flag") {
+                foundFlag()
+                return
+            } else if (outcome === "win") {
                 currentTeam.wonPart(defender.rank)
                 defender.destroy()
                 attacker.move(row, column)
