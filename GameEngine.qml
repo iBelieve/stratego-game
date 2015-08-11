@@ -212,6 +212,33 @@ Item {
         delay(500).then(replayMove)
     }
 
+    function randomSetup(team) {
+        var parts = JSON.parse(JSON.stringify(initialParts))
+        for (var i = 0; i < 40; i++) {
+            var partNames = Object.keys(parts)
+            var rank = partNames[0]
+            var square = randomSquare(team)
+            createPart(team, rank, square.row, square.column)
+
+            parts[rank]--
+            if (parts[rank] === 0)
+                delete parts[rank]
+        }
+    }
+
+    function randomSquare(team) {
+        while (true) {
+            var row = Math.floor(Math.random() * 4)
+            var column = Math.floor(Math.random() * 10)
+
+            if (team === "red")
+                row = 9 - row
+
+            if (!currentBoard.partAt(row, column))
+                return { "row": row, "column": column }
+        }
+    }
+
     function createPart(team, rank, row, column) {
         var uid = Utils.generateID()
 

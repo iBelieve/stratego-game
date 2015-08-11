@@ -32,7 +32,6 @@ function generateID() {
                s4() + '-' + s4() + s4() + s4();
       };
     })()();
-    print(guid)
     return guid
 }
 
