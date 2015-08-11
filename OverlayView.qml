@@ -55,7 +55,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pointSize: 20
                 text: {
-                    var outcome = gameEngine.stateParams.attacker.attack(gameEngine.stateParams.defender)
+                    var outcome = gameEngine.stateParams.outcome
 
                     if (gameEngine.stateParams.replay) {
                         if (outcome === "win") {

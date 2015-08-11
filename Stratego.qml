@@ -36,6 +36,8 @@ Window {
     GameBoard {
         id: redBoard
 
+        inverted: true
+
         anchors {
             left: statusView.right
             verticalCenter: parent.verticalCenter

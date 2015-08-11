@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN' 'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg fill-opacity="1" xmlns:xlink="http://www.w3.org/1999/xlink" color-rendering="auto" color-interpolation="auto" text-rendering="auto" stroke="black" stroke-linecap="square" stroke-miterlimit="10" shape-rendering="auto" stroke-opacity="1" fill="black" stroke-dasharray="none" font-weight="normal" stroke-width="1" xmlns="http://www.w3.org/2000/svg" font-family="&apos;Dialog&apos;" font-style="normal" stroke-linejoin="miter" font-size="12" stroke-dashoffset="0" image-rendering="auto">
+  <!--Unicode Character 'BLACK FLAG' (U+2691)-->
+  <defs id="genericDefs" />
+  <g>
+    <g>
+      <path d="M25.3125 392.0625 L14.0625 385.3125 L92.8125 144 L89.4375 140.625 L97.3125 133.875 L108.5625 122.625 L112.5 123.75 L110.8125 138.9375 L111.375 147.9375 L106.875 148.5 L103.5 156.9375 L110.25 159.1875 L111.9375 155.25 L130.5 164.25 L170.4375 190.125 L201.375 209.8125 L239.0625 225.5625 L245.8125 227.25 L239.625 242.4375 L215.4375 315 L200.8125 330.75 L167.0625 317.8125 L128.25 291.375 L91.6875 267.75 L77.0625 262.6875 L79.875 256.5 L73.125 253.6875 L25.3125 392.0625 ZM83.8125 246.375 L107.4375 167.0625 L100.6875 164.25 L75.9375 244.6875 L83.8125 246.375 Z" stroke="none" />
+    </g>
+  </g>
+</svg>

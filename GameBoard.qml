@@ -3,6 +3,8 @@ import QtQuick 2.0
 Rectangle {
     id: board
 
+    property bool inverted
+
     visible: gameEngine.currentBoard == board
 
     width: grid.width + border.width * 2
@@ -32,8 +34,10 @@ Rectangle {
         Repeater {
             model: grid.rows * grid.columns
             delegate: BoardTile {
-                row: Math.floor(index/grid.rows)
-                column: index - row * grid.rows
+                property int realRow: Math.floor(index/grid.rows)
+
+                row: inverted ? realRow : 9 - realRow
+                column: index - realRow * grid.rows
             }
         }
     }

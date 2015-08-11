@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 Item {
     id: part
-    x:width * column
+    x: width * column
     y: width * row
     width: 60; height: width
     z: Drag.active ? 10 : 0
@@ -22,16 +22,25 @@ Item {
         move(row, column)
     }
 
-    function move(row, column) {
+    function move(row, column, redTeam) {
         part.row = row
         part.column = column
 
         x = width * column
-        y = width * row
+        if (gameEngine.currentBoard === redBoard || redTeam == true) {
+            y = width * row
+        } else {
+            y = width * (9 - row)
+        }
     }
 
-    property string team: "blue"
-    property int rank
+    property var info: {
+        team: "blue"
+        rank: 9
+    }
+
+    readonly property string team: info.team
+    readonly property int rank: info.rank
 
     Drag.active: dragArea.drag.active
     Drag.hotSpot.x: 10
@@ -39,7 +48,7 @@ Item {
 
     property bool canDrag: {
         if (gameEngine.mode == "playing") {
-            return rank != 0 && gameEngine.currentTeam && team == gameEngine.currentTeam.name
+            return rank != 0 && rank != -2 && gameEngine.currentTeam && team == gameEngine.currentTeam.name
         } else {
             return true && team == gameEngine.currentTeam.name
         }
