@@ -146,7 +146,7 @@ Item {
             if (drag.active) {
                 part.Drag.active = true
             } else {
-                if (part.Drag.drop() == Qt.IgnoreAction) {
+                if (part.Drag.drop() === Qt.IgnoreAction) {
                     reset()
                 }
             }

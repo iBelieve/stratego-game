@@ -96,9 +96,9 @@ Item {
                 lastWinner = attacker
             } else if (outcome === "loose") {
                 currentTeam.lostPart(attacker.rank)
+                defender.move(attacker.row, attacker.column)
                 attacker.destroy()
                 lastWinner = defender
-                defender.move(attacker.row, attacker.column)
             } else if (outcome === "tie") {
                 currentTeam.lostPart(attacker.rank)
                 currentTeam.wonPart(defender.rank)
@@ -127,6 +127,8 @@ Item {
         var attackerInfo = attacker ? attacker.info : undefined
         var defenderInfo = defender ? defender.info : undefined
 
+        var attackerRow = attacker.row, attackerColumn = attacker.column
+
         attacker.move(row, column)
 
         if (defender && defender !== attacker) {
@@ -140,10 +142,8 @@ Item {
             } else if (outcome === "loose") {
                 delay(200).then(function() {
                     currentTeam.wonPart(attacker.rank)
+                    defender.move(attackerRow, attackerColumn)
                     attacker.destroy()
-                })
-                delay(200).then(function() {
-                    defender.move(attacker.row, attacker.column)
                 })
             } else if (outcome === "tie") {
                 delay(200).then(function() {
