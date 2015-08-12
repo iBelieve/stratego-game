@@ -34,11 +34,13 @@ Column {
     Text {
         font.pointSize: 17
         font.family: "Times New Roman"
-        text: "Parts you have lost"
+        text: "Parts you have lost: " + gameEngine.currentTeam.lostCount
         color: "white"
     }
 
     Flow {
+        width: parent.width
+
         Repeater {
             model: Object.keys(gameEngine.currentTeam.lostParts)
             delegate: PartView {
@@ -79,11 +81,13 @@ Column {
     Text {
         font.pointSize: 17
         font.family: "Times New Roman"
-        text: "Parts you have won"
+        text: "Parts you have won: " + gameEngine.currentTeam.wonCount
         color: "white"
     }
 
     Flow {
+        width: parent.width
+
         Repeater {
             model: Object.keys(gameEngine.currentTeam.wonParts)
             delegate: PartView {
@@ -114,6 +118,18 @@ Column {
                 }
             }
         }
+    }
+
+    Item {
+        width: parent.width
+        height: 20
+    }
+
+    Text {
+        font.pointSize: 17
+        font.family: "Times New Roman"
+        text: "Moveable parts: " + gameEngine.currentTeam.partCount
+        color: "white"
     }
 }
 

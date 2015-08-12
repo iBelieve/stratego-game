@@ -243,7 +243,7 @@ Item {
     function createPart(team, rank, row, column) {
         var uid = Utils.generateID()
 
-        if (rank > 0 || rank === -1) {
+        if (rank > 0 || rank == -1) {
             if (team === "blue") {
                 blueTeam.partCount++
             } else {

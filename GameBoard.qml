@@ -47,9 +47,10 @@ Item {
                 model: grid.rows * grid.columns
                 delegate: BoardTile {
                     property int realRow: Math.floor(index/grid.rows)
+                    property int realColumn: index - realRow * grid.rows
 
                     row: inverted ? realRow : 9 - realRow
-                    column: index - realRow * grid.rows
+                    column:inverted ? 9 - realColumn : realColumn
                 }
             }
         }
