@@ -20,7 +20,9 @@ Column {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             font.pointSize: 19
+            font.family: "Times New Roman"
             text: gameEngine.currentTeam.capName
+            color: "white"
         }
     }
 
@@ -31,7 +33,9 @@ Column {
 
     Text {
         font.pointSize: 17
+        font.family: "Times New Roman"
         text: "Parts you have lost"
+        color: "white"
     }
 
     Flow {
@@ -60,6 +64,7 @@ Column {
                     Text {
                         anchors.centerIn: parent
                         text: gameEngine.currentTeam.lostParts[modelData]
+                        font.family: "Times New Roman"
                     }
                 }
             }
@@ -73,7 +78,9 @@ Column {
 
     Text {
         font.pointSize: 17
+        font.family: "Times New Roman"
         text: "Parts you have won"
+        color: "white"
     }
 
     Flow {
@@ -102,6 +109,7 @@ Column {
                     Text {
                         anchors.centerIn: parent
                         text: gameEngine.currentTeam.wonParts[modelData]
+                        font.family: "Times New Roman"
                     }
                 }
             }

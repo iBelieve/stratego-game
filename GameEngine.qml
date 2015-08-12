@@ -214,7 +214,8 @@ Item {
 
     function randomSetup(team) {
         var parts = JSON.parse(JSON.stringify(initialParts))
-        for (var i = 0; i < 40; i++) {
+        var count = 0
+        while (Object.keys(parts).length > 0) {
             var partNames = Object.keys(parts)
             var rank = partNames[0]
             var square = randomSquare(team)

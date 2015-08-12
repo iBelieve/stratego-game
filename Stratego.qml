@@ -9,6 +9,11 @@ Window {
     width: blueBoard.width + statusView.width + 30
     height: blueBoard.height + 20
 
+    Image {
+        anchors.fill: parent
+        source: Qt.resolvedUrl("background.png")
+    }
+
     GameEngine {
         id: gameEngine
     }

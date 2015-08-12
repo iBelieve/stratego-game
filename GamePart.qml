@@ -2,8 +2,8 @@ import QtQuick 2.0
 
 Item {
     id: part
-    x: width * column
-    y: width * row
+    x: width * column + 75/2
+    y: width * row + 75/2
     width: 60; height: width
     z: Drag.active ? 10 : 0
 
@@ -28,11 +28,11 @@ Item {
         part.row = row
         part.column = column
 
-        x = width * column
+        x = width * column + 75/2
         if (gameEngine.currentBoard === redBoard || redTeam == true) {
-            y = width * row
+            y = width * row + 75/2
         } else {
-            y = width * (9 - row)
+            y = width * (9 - row) + 75/2
         }
     }
 

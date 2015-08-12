@@ -9,18 +9,17 @@ Item {
     property bool showRank: (gameEngine.currentTeam && gameEngine.currentTeam.name === team) || gameEngine.state == "gameOver"
     property color color: "#E6B713"
 
-    Rectangle {
+    Image {
         id: rectangle
-        anchors.centerIn: parent
-        width: parent.width * 2/3
+        width: parent.width
         height: width
-        radius: 4
-        color: team
+        source: Qt.resolvedUrl("%1_part.png".arg(team))
     }
 
     Text {
         anchors.centerIn: parent
-        font.pointSize: 17
+        anchors.verticalCenterOffset: 4
+        font.pointSize: 23
         font.family: "Times New Roman"
         style: Text.Raised
         styleColor: Qt.darker(color)
@@ -42,6 +41,7 @@ Item {
     Image {
         id: image
         anchors.centerIn: parent
+        anchors.verticalCenterOffset: 4
         sourceSize.width: width * Screen.devicePixelRatio
         sourceSize.height: height * Screen.devicePixelRatio
         width: 20

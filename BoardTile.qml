@@ -25,9 +25,8 @@ DropArea {
     Rectangle {
         anchors.fill: parent
 
-        border.color: "gray"
-        color: gameEngine.isDisabled(row, column) ? "#faa"
-                                                  : dropArea.containsDrag && dropArea.drag.source.canDrop(row, column)
-                                                    ? "#ddd" : "white"
+        border.color: Qt.rgba(0,0,0,0.25)
+        color: dropArea.containsDrag && dropArea.drag.source.canDrop(row, column)
+                                                    ? Qt.rgba(0,0,0,0.3) : Qt.rgba(0,0,0,0)
     }
 }
