@@ -114,7 +114,11 @@ Item {
         if (defender.rank === -2) {
             return "flag"
         } else if (defender.rank === 0) {
-            return "bomb"
+            if (rank == 8) {
+                return "win"
+            } else {
+                return "bomb"
+            }
         } else if (defender.rank === 1 && rank === -1) {
             return "win"
         } else if (defender.rank === rank) {
@@ -124,7 +128,7 @@ Item {
         } else if (defender.rank === -1) {
             return "win"
         } else {
-            return defender.rank < rank ? "win" : "loose"
+            return rank < defender.rank ? "win" : "loose"
         }
     }
 
@@ -142,7 +146,9 @@ Item {
             if (drag.active) {
                 part.Drag.active = true
             } else {
-                part.Drag.drop()
+                if (part.Drag.drop() == Qt.IgnoreAction) {
+                    reset()
+                }
             }
         }
     }

@@ -13,11 +13,11 @@ DropArea {
         var attacker = drag.source
 
         if (attacker.row === row && attacker.column === column) {
-            attacker.reset()
+            drop.accepted = false
         } else if (!attacker.canDrop(row, column)) {
             drop.accepted = false
-            attacker.reset()
         } else {
+            drop.accept(Qt.MoveAction)
             gameEngine.move(attacker, row, column)
         }
     }
