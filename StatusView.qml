@@ -4,7 +4,7 @@ Column {
     width: 300
     spacing: 5
 
-    visible: gameEngine.state !== "pass"
+    visible: gameEngine.state !== "pass" && gameEngine.state !== "setup"
 
     Row {
         spacing: 5

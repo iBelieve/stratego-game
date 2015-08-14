@@ -67,6 +67,8 @@ Item {
 
         if (state == "pass" || state == "battle" || state == "gameOver")
             overlayView.showing = true
+        else if (state == "setup")
+            setupView.startSetup()
     }
 
     function move(attacker, row, column) {
@@ -81,6 +83,20 @@ Item {
             }
         }
 
+        function noteRank(part) {
+            if (part.team !== aiPlayer.team && aiPlayer.playing)
+                aiPlayer.noteEnemyRank(part)
+        }
+
+        function noteKill(part) {
+            if (part.team !== aiPlayer.team && aiPlayer.playing)
+                aiPlayer.noteEnemyKilled(part)
+        }
+
+        if (attacker.team !== aiPlayer.team && aiPlayer.playing) {
+            aiPlayer.noteEnemyMove(attacker, row, column)
+        }
+
         var defender = currentBoard.partAt(row, column)
 
         if (defender && defender !== attacker) {
@@ -93,25 +109,34 @@ Item {
                 currentTeam.wonPart(defender.rank)
                 defender.destroy()
                 attacker.move(row, column)
+                noteRank(attacker)
+                noteKill(defender)
                 lastWinner = attacker
             } else if (outcome === "loose") {
                 currentTeam.lostPart(attacker.rank)
                 defender.move(attacker.row, attacker.column)
                 attacker.destroy()
+                noteRank(defender)
+                noteKill(attacker)
                 lastWinner = defender
             } else if (outcome === "tie") {
                 currentTeam.lostPart(attacker.rank)
                 currentTeam.wonPart(defender.rank)
                 attacker.destroy()
                 defender.destroy()
+                noteKill(attacker)
+                noteKill(defender)
                 lastWinner = undefined
             } else if (outcome === "bomb") {
                 currentTeam.lostPart(attacker.rank)
                 attacker.destroy()
+                noteRank(defender)
+                noteKill(attacker)
                 lastWinner = defender
             }
 
-            showBattle(attacker, defender, outcome)
+            var isAI = currentTeam.name === aiPlayer.team && aiPlayer.playing
+            showBattle(attacker, defender, outcome, isAI)
         } else {
             lastWinner = undefined
             attacker.move(row, column)
@@ -189,13 +214,19 @@ Item {
             } else if (currentTeam.noMoreParts) {
                 gameOver(oppositeTeam, currentTeam.capName + " has no more moveable parts")
             } else {
-                go("pass", {
-                    "team": oppositeTeam
-                })
+                if (aiPlayer.playing) {
+                    confirmPass(oppositeTeam)
+                } else {
+                    go("pass", {
+                        "team": oppositeTeam
+                    })
 
-                currentTeam = null
+                    currentTeam = null
+                }
             }
         })
+
+
     }
 
     function gameOver(team, message) {
@@ -207,9 +238,16 @@ Item {
 
     function confirmPass(team) {
         currentTeam = team
-        currentBoard = team.board
 
-        delay(500).then(replayMove)
+        if (!aiPlayer.playing)
+            currentBoard = team.board
+
+        if (currentTeam.name === aiPlayer.team && aiPlayer.playing)
+            aiPlayer.takeTurn()
+    }
+
+    function setup() {
+        go("setup", {"team": blueTeam})
     }
 
     function randomSetup(team) {
@@ -268,6 +306,10 @@ Item {
             "uid": uid
         })
         part2.move(row, column, true)
+    }
+
+    function wouldWin(attacker, defender) {
+        return attacker.attack(defender) === "win"
     }
 
     Component {

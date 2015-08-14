@@ -18,6 +18,10 @@ Window {
         id: gameEngine
     }
 
+    AIPlayer {
+        id: aiPlayer
+    }
+
     StatusView {
         id: statusView
         anchors {
@@ -26,6 +30,11 @@ Window {
             bottom: parent.bottom
             margins: 10
         }
+    }
+
+    SetupView {
+        id: setupView
+        anchors.fill: statusView
     }
 
     GameBoard {

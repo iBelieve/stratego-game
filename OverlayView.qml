@@ -138,8 +138,10 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Got it!"
                 onClicked: {
+                    var isAI = gameEngine.currentTeam.name === aiPlayer.team && aiPlayer.playing
+
                     overlayView.showing = false
-                    if (!gameEngine.stateParams.replay)
+                    if (!gameEngine.stateParams.replay || isAI)
                         gameEngine.passToNext()
                 }
             }

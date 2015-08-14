@@ -50,10 +50,10 @@ Item {
     Drag.hotSpot.y: 10
 
     property bool canDrag: {
-        if (gameEngine.state == "") {
+        if (gameEngine.state === "") {
             return rank != 0 && rank != -2 && gameEngine.currentTeam && team == gameEngine.currentTeam.name
         } else {
-            return false
+            return true && team == gameEngine.currentTeam.name
         }
     }
 
@@ -158,8 +158,7 @@ Item {
         anchors.fill: parent
         rank: part.rank
         team: part.team
-        showRank: (gameEngine.currentTeam && gameEngine.currentTeam.name === team &&
-                   (!aiPlayer.playing || aiPlayer.team !== gameEngine.currentTeam.name)) ||
+        showRank: (gameEngine.currentTeam && gameEngine.currentTeam.name === team) ||
                   (gameEngine.lastWinner !== undefined && part.uid === gameEngine.lastWinner.uid) ||
                   gameEngine.state == "gameOver"
     }

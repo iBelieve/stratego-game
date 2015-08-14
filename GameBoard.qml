@@ -20,6 +20,8 @@ Item {
                 }
             }
         }
+
+        return undefined
     }
 
     Image {
