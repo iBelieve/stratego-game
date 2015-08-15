@@ -39,6 +39,7 @@ Item {
     function takeTurn() {
         // Try to move high ranking parts to the flag
         // If any parts are near the flag, attack them it
+        // If any part is moving towards a known-ranked part, retreat and defend it
         // If there are any known high-ranking parts, move higher parts to attack them
         // If there are any known low-ranking parts in the vacinity, engage them
         // If there are any known bombs, attack them
@@ -53,7 +54,11 @@ Item {
 
         print("Moving forwards!")
         // Move forwards
-        moveForwards()
+        if (moveForwards())
+            return
+
+        console.log("Nothing can move!")
+        gameEngine.noMoreParts()
     }
 
     function engage(part) {
@@ -72,27 +77,15 @@ Item {
     }
 
     function moveForwards() {
-        // Find the front-most part with a low rank and no one in front
-        var matchingParts = [];
-        for (var row = 4; row < 7; row++) {
-            for (var column = 0; column < 10; column++) {
-                var part = gameEngine.currentBoard.partAt(row, column)
-                if (part !== undefined && canMoveForwards(part)) {
-                    matchingParts.push(part)
-                }
-            }
+        var part = bestPartToMove()
+
+        if (part) {
+            // Move the part forwards
+            move(part, -1, 0)
+            return true
+        } else {
+            return part
         }
-
-        matchingParts = matchingParts.sort(function(a, b) {
-            if (a.row == b.row) {
-                return a.column - b.column
-            } else {
-                return a.row - b.row
-            }
-        })
-
-        // Move the part forwards
-        move(matchingParts[0], -1, 0)
     }
 
     function bestPartToEngage() {
@@ -134,6 +127,34 @@ Item {
     function distBetween(target, part) {
         var routeMap = createRouteMap(target)
         return distTo(routeMap, part)
+    }
+
+    /*
+     * We don't have an known enemy to engage, so we're going to find another part to move
+     */
+    function bestPartToMove() {
+        var parts = teamParts()
+        parts = filter(parts, function(part) {
+            return canMoveForwards(part)
+        })
+
+        parts.sort(function(a, b) {
+            var shouldMoveA = shouldMoveForwards(a)
+            var shouldMoveB = shouldMoveForwards(b)
+
+            if (shouldMoveA === shouldMoveB) {
+                return gameEngine.bestMiddlePart(a, b)
+            } else if (shouldMoveA) {
+                return -1
+            } else {
+                return 1
+            }
+        })
+
+        if (parts[0])
+            print("Best part to move is", parts[0].rank)
+
+        return parts[0]
     }
 
     // WORKING CORRECTLY
@@ -206,6 +227,20 @@ Item {
                     !gameEngine.isDisabled(part.row - 1, part.column)
         } else {
             return false
+        }
+    }
+
+    function shouldMoveForwards(part) {
+        if (!canMoveForwards(part))
+            return false
+
+        var partInFront = gameEngine.currentBoard.partAt(part.row - 1, part.column)
+
+        if (partInFront) {
+            var isPartMoving = movingParts.indexOf(partInFront)
+            return isPartMoving
+        } else {
+            return true
         }
     }
 
