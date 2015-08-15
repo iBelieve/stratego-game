@@ -93,6 +93,8 @@ Item {
                 aiPlayer.noteEnemyKilled(part)
         }
 
+        var isAI = currentTeam.name === aiPlayer.team && aiPlayer.playing
+
         if (attacker.team !== aiPlayer.team && aiPlayer.playing) {
             aiPlayer.noteEnemyMove(attacker, row, column)
         }
@@ -107,6 +109,7 @@ Item {
                 return
             } else if (outcome === "win") {
                 currentTeam.wonPart(defender.rank)
+                if (isAI) oppositeTeam.lostPart(defender.rank)
                 defender.destroy()
                 attacker.move(row, column)
                 noteRank(attacker)
@@ -114,6 +117,7 @@ Item {
                 lastWinner = attacker
             } else if (outcome === "loose") {
                 currentTeam.lostPart(attacker.rank)
+                if (isAI) oppositeTeam.wonPart(attacker.rank)
                 defender.move(attacker.row, attacker.column)
                 attacker.destroy()
                 noteRank(defender)
@@ -122,6 +126,10 @@ Item {
             } else if (outcome === "tie") {
                 currentTeam.lostPart(attacker.rank)
                 currentTeam.wonPart(defender.rank)
+                if (isAI) {
+                    oppositeTeam.wonPart(attacker.rank)
+                    oppositeTeam.lostPart(defender.rank)
+                }
                 attacker.destroy()
                 defender.destroy()
                 noteKill(attacker)
@@ -129,13 +137,13 @@ Item {
                 lastWinner = undefined
             } else if (outcome === "bomb") {
                 currentTeam.lostPart(attacker.rank)
+                if (isAI) oppositeTeam.wonPart(attacker.rank)
                 attacker.destroy()
                 noteRank(defender)
                 noteKill(attacker)
                 lastWinner = defender
             }
 
-            var isAI = currentTeam.name === aiPlayer.team && aiPlayer.playing
             showBattle(attacker, defender, outcome, isAI)
         } else {
             lastWinner = undefined
@@ -310,6 +318,18 @@ Item {
 
     function wouldWin(attacker, defender) {
         return attacker.attack(defender) === "win"
+    }
+
+    function bestPart(a, b) {
+        if (a.rank === b.rank) {
+            return 0
+        } else if (a.rank === -1) {
+            return b.rank === 1 ? -1 : 1
+        } else if (b.rank === -1) {
+            return a.rank === 1 ? -1 : 1
+        } else {
+            return a.rank - b.rank
+        }
     }
 
     Component {

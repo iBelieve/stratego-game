@@ -161,6 +161,7 @@ Item {
         showRank: (gameEngine.currentTeam && gameEngine.currentTeam.name === team &&
                    (!aiPlayer.playing || aiPlayer.team !== gameEngine.currentTeam.name)) ||
                   (gameEngine.lastWinner !== undefined && part.uid === gameEngine.lastWinner.uid) ||
+                  (aiPlayer.playing && aiPlayer.team !== team) ||
                   gameEngine.state == "gameOver"
     }
 }

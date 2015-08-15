@@ -11,25 +11,28 @@ Item {
 
     function noteEnemyMove(part, row, column) {
         print("Enemy moved", part.rank)
-        movingParts.push(part)
-        movingParts.splice(moveMemory)
+        if (movingParts.indexOf(part) == -1) {
+            movingParts.push(part)
+            movingParts.splice(moveMemory)
+        }
     }
 
     function noteEnemyRank(part) {
         print("Enemy discovered", part.rank)
-        movingParts.push(part)
-        movingParts.splice(moveMemory)
+        if (rankedParts.indexOf(part) == -1) {
+            rankedParts.push(part)
+            rankedParts.splice(moveMemory)
+        }
     }
 
     function noteEnemyKilled(part) {
         print("Enemy killed", part.rank)
         var movingIndex = movingParts.indexOf(part)
         var rankIndex = rankedParts.indexOf(part)
-        print(movingIndex, rankIndex)
 
-        if (movingIndex > 0)
+        if (movingIndex != -1)
             movingParts.splice(movingIndex, 1)
-        if (rankIndex > 0)
+        if (rankIndex != -1)
             rankedParts.splice(rankIndex, 1)
     }
 
@@ -43,29 +46,28 @@ Item {
         if (movingParts.length > 0) {
             var routeMap = createRouteMap(movingParts[0])
 
-            for (var i = 9; i >= 0; i--) {
-                print(JSON.stringify(routeMap[i]))
-            }
-
-//            var bestEnemyPart = bestPartToEngage()
-//            print("Best enemy part to attack is", bestEnemyPart.rank)
-//            engage(bestEnemyPart)
+            var bestEnemyPart = bestPartToEngage()
+            if (bestEnemyPart && engage(bestEnemyPart))
+                return
         }
 
+        print("Moving forwards!")
         // Move forwards
-        else {
-            moveForwards()
-        }
+        moveForwards()
     }
 
     function engage(part) {
         // To engage an enemy part,
         // Find the nearest and best part to attack with
-        var nearestPart = bestTeamPart(part)
+        var bestPart = bestTeamPart(part)
         // If a part was found,
-        if (nearestPart) {
+        print("The best part to engage was", part.rank)
+        if (bestPart) {
             // Move that part towards the enemy, attacking if possible
-            moveTowards(nearestPart, part)
+            moveTowards(bestPart, part)
+            return true
+        } else {
+            return false
         }
     }
 
@@ -113,7 +115,11 @@ Item {
             var distA = distBetween(a, nearestToA)
             var distB = distBetween(b, nearestToB)
 
-            return distA - distB
+            if (distA === distB) {
+                return gameEngine.bestPart(nearestToA, nearestToB)
+            } else {
+                return distA - distB
+            }
         })
 
         var bestEnemy = parts[0]
@@ -125,6 +131,12 @@ Item {
             return undefined
     }
 
+    function distBetween(target, part) {
+        var routeMap = createRouteMap(target)
+        return distTo(routeMap, part)
+    }
+
+    // WORKING CORRECTLY
     function bestTeamPart(enemyPart) {
         // Cache the route map to the enemy part
         var routeMap = createRouteMap(enemyPart)
@@ -132,9 +144,21 @@ Item {
         // To find the best team part to engage a specified enemy part,
         // Look through all the team parts, filtering by lower rank if the enemy rank is known
         var parts = teamParts()
-        if (rankedParts.indexOf(enemyPart)) {
+
+        parts = filter(parts, function(part) {
+            var dist = distTo(routeMap, part)
+            var canMove = part.canDrag && dist !== -1
+
+            return canMove
+        })
+
+        if (rankedParts.indexOf(enemyPart) != -1) {
             parts = filter(parts, function(part) {
                 return gameEngine.wouldWin(part, enemyPart)
+            })
+        } else {
+            parts = filter(parts, function(part) {
+                return part.rank < 8 && part.rank > 0
             })
         }
 
@@ -145,30 +169,13 @@ Item {
             var canMoveA = a.canDrag && distA !== -1
             var canMoveB = b.canDrag && distB !== -1
 
-            if (!canMoveA && !canMoveB) {
-                return 0
-            } else if (!canMoveA) {
-                return 1
-            } else if (!canMoveB) {
-                return -1
-            } else {
-                return distA - distB
-            }
+            return distA - distB
         })
 
-
-        var closestPart = parts[0]
-        var dist = distTo(routeMap, closestPart)
-        var canMove = closestPart.canMove && dist !== -1
-
-        // Ensure we can actually found a part that can be moved
-        if (canMove) {
-            return closestPart
-        } else {
-            return undefined
-        }
+        return parts[0]
     }
 
+    // WORKING CORRECTLY
     function teamParts() {
         var parts = gameEngine.currentBoard.children
         return filter(parts, function(part) {
@@ -176,6 +183,7 @@ Item {
         })
     }
 
+    // WORKING CORRECTLY
     function filter(array, func) {
         var newArray = []
         for (var i = 0; i < array.length; i++) {
@@ -204,7 +212,7 @@ Item {
     function moveTowards(part, enemy) {
         print("Moving", part.rank, "to engage", enemy.rank)
         var routeMap = createRouteMap(enemy)
-        var moveDiff = bestMove(routeMap, part)
+        var moveDiff = bestMove(routeMap, part, enemy)
         move(part, moveDiff.rowDiff, moveDiff.columnDiff)
     }
 
@@ -252,8 +260,12 @@ Item {
         return map
     }
 
-    function bestMove(routeMap, part) {
-        return routeInfo(routeMap, part.row, part.column)
+    function bestMove(routeMap, part, target) {
+        return routeInfo(routeMap, part.row, part.column, target)
+    }
+
+    function distTo(routeMap, part) {
+        return distToPoint(routeMap, part.row, part.column)
     }
 
     function routeInfo(routeMap, row, column, target) {
@@ -291,8 +303,6 @@ Item {
                 return a - b
             }
         })
-
-        print("Sorted dists", sortedDists)
 
         if (sortedDists[0] < 0)
             return undefined
