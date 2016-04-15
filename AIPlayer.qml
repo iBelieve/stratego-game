@@ -36,6 +36,22 @@ Item {
             rankedParts.splice(rankIndex, 1)
     }
 
+    function rankThreats() {
+        // For each of the known enemy parts,
+        //  Compare it to each known team part
+        //    If the enemy part's rank is known,
+        //      If the team part would loose, set the threat to high
+        //      If the battle would be a tie, set the threat based on the rank of the parts
+        //      If the team part would win, set  the threat to low
+        //    Otherwise if the enemy rank is NOT known,
+        //      Set the threat based on the rank of the team part
+        //    If the team part's rank is known,
+        //      Increase the potential threat
+        //    If it is getting closer, increase the threat
+        //    If it is following the team part, increase the threat
+        //    If it is getting farther away, decrease the threat
+    }
+
     function takeTurn() {
         // Try to move high ranking parts to the flag
         // If any parts are near the flag, attack them it
